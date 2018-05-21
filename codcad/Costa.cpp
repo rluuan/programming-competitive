@@ -21,7 +21,7 @@ int dy[4] = {1, 0, -1, 0};
 
 vector < pair <int, int> > event;
 
-inline void dfs(int x, int y) {
+inline void build (int x, int y) {
 	for (auto w: event) {
 		int solve = 0;
 		for (int i = 0; i < 4; ++i) {
@@ -52,7 +52,7 @@ int main() {
 			if (costa[i][j] == '#') event.push_back(make_pair(i, j));
 		}
 	}
-	dfs(n, m);
+	build (n, m);
 
 	cout << ans << '\n';
 

@@ -28,11 +28,7 @@ inline void build (int x, int y) {
 			int nx = w.first  + dx[i];
 			int ny = w.second + dy[i];
 			
-			if (w.first == x - 1 || w.second == y - 1 || w.first == 0 || w.second == 0) {
-				ans++;
-				break;
-			} 
-			else if (costa[nx][ny] == '.') {
+			if (w.first == x - 1 || w.second == y - 1 || ! w.first|| ! w.second || costa[nx][ny] == '.') {
 				ans++;
 				break;
 			} 

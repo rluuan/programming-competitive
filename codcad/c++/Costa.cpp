@@ -6,6 +6,7 @@ using namespace std;
 #define dbg(n) cout << #n << " = " << n << endl
 #define dbg2(n1, n2) cout << #n1 << " = " << n1 << ", " << #n2 << " = " << n2 << endl
 #define ms(x, n) memset(x, n, sizeof(x))
+//
 
 void init(bool dec) {
 	ios_base::sync_with_stdio(false);

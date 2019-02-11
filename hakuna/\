@@ -1,0 +1,21 @@
+#include <stdio.h>
+#include <string.h>
+
+int maxn = 1000;
+//char n[maxn], m[maxn];
+
+int rev (char *e) {
+	char *tmp;
+
+	for (int i = strlen(e) - 1; i >= 0; --i) {
+		*(tmp++) = e[i];
+	}
+	printf ("%s", *tmp);
+	return (*tmp - '0');
+}
+int main() {
+	
+	printf ("%d", rev("1234"));
+
+	return 0;
+}

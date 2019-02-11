@@ -23,11 +23,22 @@ inline string GetString(void){
     return s;
 }
 
+struct points {
+	int x;
+	int y;
+
+	points() : x(0), y(0) {}
+	points (int x, int y) : x(x), y(y) {};
+	void read() { scanf ("%d %d", &x, &y); }
+	void print() { cout << x << " " << y << endl; }
+};
 
 
 int main() {
 	fast_io
 	
 
+
 	return 0;
 }
+

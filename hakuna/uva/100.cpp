@@ -22,12 +22,45 @@ inline string GetString(void){
     scanf("%s",x); string s = x;
     return s;
 }
+int t = 0;
+vector <int> dp(1000000, -1);
+void build(int x) {
+	t++;
+	if (dp[x] != -1) {
+		t += dp[x];
+		return;
+	}
+	if (x == 1) {
+		dp[x] = t - 1;
+		return;
+	}
+	if (x & (1 << 0)) {
+		build(3 * x + 1);
+	} else {
+		build(x / 2);
+	}
+}
 
-
+	
 
 int main() {
 	fast_io
 	
-
+	int x1, x2, ans;
+	
+	while (cin >> x1 >> x2) {
+		ans = 0;
+		for (int i = x1; i <= x2; ++i) {
+			if (dp[i] != -1) {
+				ans = dp[i];
+				break;
+			}
+			build(i);
+			ans = max(ans, t);
+			t = 0;
+		}
+		cout << x1 << " " << x2 << " " << ans << endl;
+	}
 	return 0;
 }
+

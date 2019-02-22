@@ -8,47 +8,59 @@ const int maxn = 100000;
 const int maxnt = 4 * maxn;
 bool tree[maxnt];
 
-void update(int node, int l, int r, int ll, int rr) {
-	if (l > rr || ll > r) {
-		return;
-	}
-	if (l == ll and r == rr) {
-		tree[node] = !tree[node];
-		return;
-	}
-	int mid   = (l + r) >> 1;
-	int left  = node << 1;
-	int right = node << 1 | 1;
-	update(left, l, mid, ll, mid);
-	update(right, mid + 1, r, mid + 1, rr);
-	tree[node] = tree[left] + tree[right];
+void push(int x) {
+	tree[x] = tree[x + x] + tree[x + x + 1];
 }
-int query(int node, int l, int r, int ll, int rr) {
-	
-	if (ll <= l and r <= rr) {
-		return tree[node];
+
+void build(int x, int l, int r) {
+	if (l == r) {
+		tree[x] = 0;
+		return;
 	}
-	if (l > rr || ll > r) {
+	int y = (l + r) >> 1;
+	build(x + x, l, y);
+	build(x + x + 1, y + 1, r);
+	push(x);
+}
+void update(int x, int l, int r, int ll, int rr) {
+	if (l == ll && r == rr) { 
+		tree[x] = !tree[x];
+		return;
+	}
+	if (ll > r || rr < l) {
+		return;
+	}
+	int y = (l + r) >> 1;
+	update(x + x, l, y, ll, y);
+	update(x + x + 1, y + 1, r, y + 1, rr);
+	push(x);
+}
+int query(int x, int l, int r, int ll, int rr) {
+	if (ll <= l && r <= rr) {
+		return tree[x];
+	}
+	if (ll > r || rr < l) {
 		return 0;
 	}
-	int mid   = (l + r) >> 1;
-	int left  = node << 1;
-	int right = node <<1 | 1;
-	return query(left, l, mid, ll, mid) + query(right, mid + 1, r, mid + 1, rr);
-
+	int y = (l + r) >> 1;
+	return query(x + x, l, y, ll, y) + query(x + x + 1, y + 1, r, y + 1, rr);
 }
+	
+	
 int main() {
 	fast_io
 	int n, m, k, s, e;
 	cin >> n >> m;
-	for (int i = 1; i <= n; ++i) {
-		tree[i] = 0;
-	}
-	n++;
+	build(1, 1, n);
+
 	for (int i = 1; i <= m; ++i) {
 		cin >> k >> s >> e;
 		if (k == 0) {
 			update(1, 1, n, s, e);		
+			for (int i = 4; i <= 7; ++i) {
+				cout << tree[i] << " ";
+			}
+			cout << endl;
 		} else {
 			cout << query(1, 1, n, s, e) << endl;
 		}

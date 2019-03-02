@@ -4,9 +4,9 @@ using namespace std;
 
 #define fast_io ios_base::sync_with_stdio(false);cin.tie(NULL);
 
-const int maxn = 100000;
-const int maxnt = 4 * maxn;
-bool tree[maxnt];
+
+int tree[4 * 100000 + 1];
+int lz[112345];
 
 void push(int x) {
 	tree[x] = tree[x + x] + tree[x + x + 1];
@@ -15,52 +15,69 @@ void push(int x) {
 void build(int x, int l, int r) {
 	if (l == r) {
 		tree[x] = 0;
+		lz[x] = 0;
 		return;
 	}
-	int y = (l + r) >> 1;
-	build(x + x, l, y);
-	build(x + x + 1, y + 1, r);
+	int m = (l + r) >> 1;
+	build(x + x, l, m);
+	build(x + x + 1, m + 1, r);
 	push(x);
 }
-void update(int x, int l, int r, int ll, int rr) {
-	if (l == ll && r == rr) { 
+void modify(int x, int l, int r, int ll, int rr) {
+	if (l == r) {
 		tree[x] = !tree[x];
 		return;
 	}
 	if (ll > r || rr < l) {
 		return;
 	}
-	int y = (l + r) >> 1;
-	update(x + x, l, y, ll, y);
-	update(x + x + 1, y + 1, r, y + 1, rr);
+	int m = (l + r) >> 1;
+
+	if (rr <= m) {
+		modify(x + x, l, m, ll, m);
+		
+	} else if (ll > m) {
+		modify(x + x + 1, m + 1, r, m + 1, rr);
+
+	} else {
+		modify(x + x, l, m, ll, m);
+		modify(x + x + 1, m + 1, r, m + 1, rr);
+
+	}
 	push(x);
 }
 int query(int x, int l, int r, int ll, int rr) {
 	if (ll <= l && r <= rr) {
-		return tree[x];
+		return lz[x] == 0 ? tree[x] : 0;
+		lz[x] = 1;
 	}
-	if (ll > r || rr < l) {
-		return 0;
+	int m = (l + r) >> 1;
+	if (rr <= m) {
+		return query(x + x, l, m, ll, m);
+
+	} else if (ll > m) {
+		return query(x + x + 1, m + 1, r, m + 1, rr);
+
+	} else {
+		return query(x + x, l, m, ll, m) + query(x + x + 1, m + 1, r, m + 1, rr);
+
 	}
-	int y = (l + r) >> 1;
-	return query(x + x, l, y, ll, y) + query(x + x + 1, y + 1, r, y + 1, rr);
 }
-	
-	
+
+
+
 int main() {
 	fast_io
-	int n, m, k, s, e;
-	cin >> n >> m;
-	build(1, 1, n);
 
+
+	int n, m;
+	cin >> n >> m;
+	int k, s, e;
+	build(1, 1, n);
 	for (int i = 1; i <= m; ++i) {
 		cin >> k >> s >> e;
 		if (k == 0) {
-			update(1, 1, n, s, e);		
-			for (int i = 4; i <= 7; ++i) {
-				cout << tree[i] << " ";
-			}
-			cout << endl;
+			modify(1, 1, n, s, e);
 		} else {
 			cout << query(1, 1, n, s, e) << endl;
 		}

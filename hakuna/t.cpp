@@ -6,7 +6,6 @@ using namespace std;
 
 
 int tree[4 * 100000 + 1];
-int lz[112345];
 
 void push(int x) {
 	tree[x] = tree[x + x] + tree[x + x + 1];
@@ -15,7 +14,6 @@ void push(int x) {
 void build(int x, int l, int r) {
 	if (l == r) {
 		tree[x] = 0;
-		lz[x] = 0;
 		return;
 	}
 	int m = (l + r) >> 1;
@@ -48,8 +46,7 @@ void modify(int x, int l, int r, int ll, int rr) {
 }
 int query(int x, int l, int r, int ll, int rr) {
 	if (ll <= l && r <= rr) {
-		return lz[x] == 0 ? tree[x] : 0;
-		lz[x] = 1;
+		return tree[x];
 	}
 	int m = (l + r) >> 1;
 	if (rr <= m) {

@@ -21,10 +21,20 @@ inline string GetString(void){
     scanf("%s",x); string s = x;
     return s;
 }
-int tree[4 * 100000 + 7], add[100000 + 7], lz[100000 + 7];
+int tree[4 * 100000 + 7], add[100000 + 7], lz[4 * 100000 + 7];
 
-void push(const int x) {
+void pusht(const int x) {
 	tree[x] = tree[x << 1] + tree[x << 1 | 1];
+}
+void pushlz(const int x, const int l, const int r) {
+	if (lz[x]) {
+		tree[x] = lz[x] * (r - l + 1);
+		if(l != r) {
+			lz[x << 1] += lz[x];
+			lz[x << 1 | 1] += lz[x];
+		}
+		lz[x] = 0;
+	}
 }
 void build(const int x, const int l, const int r) {
 	if (l == r) {
@@ -36,19 +46,13 @@ void build(const int x, const int l, const int r) {
 
 	build(x << 1, l, m);
 	build(x << 1 | 1, m + 1, r);
-	push(x);
+	pusht(x);
 }
 void modify(const int x, const int l, const int r, const int ll, const int rr, const int v) {
+	pushlz(x, l, r);
+
 	if (ll > r || rr < l || l > r) {
 		return;
-	}
-	if (lz[x]) {
-		tree[x] = v * (r - l + 1);
-		if (l != r) {
-			lz[x << 1] += lz[x];
-			lz[x << 1 | 1] += lz[x];
-		}
-		lz[x] = 0;
 	}
 	if (ll <= l && r <= rr) {
 
@@ -64,20 +68,14 @@ void modify(const int x, const int l, const int r, const int ll, const int rr, c
 		modify(x << 1, l, m, ll, rr, v);
 		modify(x << 1 | 1, m + 1, r, ll, rr, v);
 
-		push(x);
+		pusht(x);
 	}
 }
 int query(const int x, const int l, const int r, const int ll, const int rr) {
+	pushlz(x, l, r);
+
 	if (ll > r || rr < l || l > r) {
 		return 0;
-	}
-	if (lz[x]) {
-		tree[x] = lz[x] * (r - l + 1);
-		if (l != r) {
-			lz[x << 1] += lz[x];
-			lz[x << 1 | 1] += lz[x];
-		}
-		lz[x] = 0;
 	}
 	if (ll <= l && r <= rr) {
 		return tree[x];
